@@ -84,7 +84,13 @@ A carga de demonstração é feita com `.\.venv\Scripts\python.exe scripts/carga
 
 Em 01/11/2026, o ambiente `iluno-dev` foi configurado com Authentication por e-mail/senha, Firestore `(default)`, regras publicadas e dados de demonstração carregados. Foram validados manualmente cadastro, login, saída, consulta de perfil, busca e detalhes de disciplinas, envio de avaliação e persistência das notas após novo login. O build do frontend e os sete testes da API passaram; os testes automatizados usam dados simulados.
 
-As credenciais ficam somente no ambiente local. O deploy e a integração contínua na Vercel ainda estão pendentes de validação.
+As credenciais ficam fora do repositório, no ambiente local ou nas variáveis de ambiente da hospedagem.
+
+### Publicação de referência
+
+O fork `Crisp98/projeto-iluno` foi publicado em https://projeto-iluno-eta.vercel.app com o Firebase `iluno-dev`. Foram verificadas as rotas de saúde, disciplinas, tópicos e detalhe de disciplina, e validados manualmente login, perfil, consulta e envio de avaliações, persistência das notas, saída e novo login.
+
+A publicação original deve receber a mesma configuração de variáveis e ser validada separadamente. O deploy automático deve ser conferido em Deployments após um novo commit na branch de produção, comparando o commit publicado com o enviado ao GitHub.
 
 ## Etapas que não são código
 
@@ -101,10 +107,13 @@ Estas precisam ser feitas por alguém da equipe, no navegador ou no terminal, an
 
 **Vercel (T16)**
 1. Em vercel.com, *Add New → Project* e importar o repositório `projeto-iluno` do GitHub.
-2. Framework: **Vite**. Os comandos de build já estão no `vercel.json`.
-3. Em *Settings → Environment Variables*, cadastrar as seis `VITE_FIREBASE_*` e a `FIREBASE_SERVICE_ACCOUNT` (o JSON inteiro da conta de serviço, colado em uma linha).
-4. Fazer o deploy e conferir `https://<seu-projeto>.vercel.app/api/health` — deve responder `{"status":"ok"}`.
-5. No Firebase, em *Authentication → Configurações → Domínios autorizados*, adicionar o domínio `*.vercel.app` do projeto, senão o login falha em produção.
+2. Framework: **Vite**, diretório raiz `./`, comando de build `npm run build` e saída `dist`. Os comandos de build já estão no `vercel.json`. Conferir que a branch de produção é `main`.
+3. Em *Settings → Environment Variables*, cadastrar as seis `VITE_FIREBASE_*` de `.env.example` com os valores do aplicativo Web Firebase. Selecionar **Production**; configurar Preview também se esse ambiente for utilizado.
+4. Cadastrar `FIREBASE_SERVICE_ACCOUNT` com o conteúdo completo do JSON da conta de serviço, incluindo `{` e `}`, sem aspas externas. Não usar o caminho do arquivo nem o prefixo `VITE_`. A conta de serviço deve ter acesso ao mesmo projeto Firebase do frontend. Nunca adicionar essa chave ao Git.
+5. Fazer o deploy. Se as variáveis forem alteradas depois, salvar e executar **Redeploy** em Deployments: a alteração não modifica uma publicação existente. As variáveis `VITE_*` são incorporadas ao frontend durante o build.
+6. Conferir `/api/health` (deve retornar `{"status":"ok"}`), `/api/disciplinas` e `/api/topicos`. A rota de saúde não acessa o Firebase; se ela funcionar e as consultas retornarem 500, consultar os Logs da Vercel e conferir a credencial da API.
+7. Testar login, perfil, busca e avaliações no endereço publicado. Se o Authentication indicar domínio não autorizado, adicionar o hostname exato (por exemplo, `meu-projeto.vercel.app`) em *Authentication → Configurações → Domínios autorizados*, sem protocolo ou caminhos.
+8. Confirmar que um novo commit na `main` gera um deployment automático do commit esperado. As variáveis são próprias de cada projeto Vercel e precisam ser cadastradas novamente em outra publicação.
 
 **GitHub**
 1. Rodar `criar_issues_onda1.sh` para criar as issues #1 a #11.
