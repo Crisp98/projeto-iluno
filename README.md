@@ -59,6 +59,33 @@ npm run dev                        # http://localhost:5173
 
 Testes da API: `pytest`
 
+### Windows (PowerShell)
+
+Na primeira instalação, copie `.env.example` para `.env.local` e preencha as seis variáveis `VITE_FIREBASE_*`. Se `.env.local` já estiver configurado, preserve o arquivo.
+
+```powershell
+npm.cmd ci
+py -3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+```
+
+Para iniciar a API, use o caminho da chave privada guardada fora do repositório:
+
+```powershell
+$env:FIREBASE_SERVICE_ACCOUNT = Get-Content -Raw "C:\caminho\serviceAccountKey.json"
+.\.venv\Scripts\python.exe -m uvicorn api.index:app --reload --port 8000
+```
+
+A API não carrega `.env.local` automaticamente. Em outro terminal, execute `npm.cmd run dev` e abra http://localhost:5173. Encerre os servidores com Ctrl+C.
+
+A carga de demonstração é feita com `.\.venv\Scripts\python.exe scripts/carga_inicial.py "C:\caminho\serviceAccountKey.json"`. Execute apenas no ambiente de desenvolvimento: o script sobrescreve as cinco disciplinas e os quatro tópicos de teste.
+
+### Validação do ambiente de desenvolvimento
+
+Em 01/11/2026, o ambiente `iluno-dev` foi configurado com Authentication por e-mail/senha, Firestore `(default)`, regras publicadas e dados de demonstração carregados. Foram validados manualmente cadastro, login, saída, consulta de perfil, busca e detalhes de disciplinas, envio de avaliação e persistência das notas após novo login. O build do frontend e os sete testes da API passaram; os testes automatizados usam dados simulados.
+
+As credenciais ficam somente no ambiente local. O deploy e a integração contínua na Vercel ainda estão pendentes de validação.
+
 ## Etapas que não são código
 
 Estas precisam ser feitas por alguém da equipe, no navegador ou no terminal, antes de o sistema funcionar.
