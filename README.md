@@ -34,6 +34,10 @@ Validação manual da entrega:
 
 Testes do serviço: `node --experimental-vm-modules --test tests/comentarios.test.mjs`. Usam dependências simuladas para conferir autoria, validação do texto e assinatura da lista; não substituem os testes das regras no Firebase.
 
+Testes reais das regras: com Node.js 22+ e Java 21+ disponíveis no PATH, executar `npm ci` e `npm run test:rules` (no PowerShell, `npm.cmd`). O comando inicia o emulador oficial do Firestore em `127.0.0.1:8080`, executa oito testes e encerra o processo. A primeira execução baixa o emulador. Não exige login Firebase, chave privada ou acesso ao banco compartilhado: utiliza o projeto fictício `demo-iluno-rules`. A porta 8080 precisa estar livre.
+
+Os testes verificam criação válida e multilinha, leitura pública, rejeição de criação anônima, UID/nome falsos, perfil ou disciplina inexistente, data forjada, campos extras/ausentes, texto inválido e bloqueio de alteração, exclusão e sobrescrita. Os oito testes passaram no emulador em 15/11/2026; o fluxo da interface foi confirmado manualmente no Preview.
+
 1. Sem login, abrir uma disciplina: a lista deve carregar e o formulário deve oferecer entrar/criar conta.
 2. Entrar e enviar um comentário: conferir nome, texto e data; atualizar a página e confirmar persistência.
 3. Abrir outra disciplina: o comentário não deve aparecer nela. Em outra sessão, confirmar a atualização da lista.

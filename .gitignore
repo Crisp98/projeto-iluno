@@ -18,6 +18,9 @@ serviceAccountKey.json
 # Vercel / Firebase
 .vercel/
 .firebase/
+firebase-debug.log*
+firestore-debug.log*
+.tools-local/
 
 # Sistema
 .DS_Store
