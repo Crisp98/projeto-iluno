@@ -5,6 +5,7 @@ import { Link, useParams } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 import { listarTopicos, obterDisciplina } from "../services/api";
 import { enviarAvaliacao, obterMinhaAvaliacao } from "../services/avaliacoes";
+import Comentarios from "../components/Comentarios";
 
 function Escala({ valor, onChange, rotulo }) {
   return (
@@ -135,6 +136,7 @@ export default function Disciplina() {
           )}
         </form>
       </aside>
+      <Comentarios key={id} disciplinaId={id} />
     </section>
   );
 }

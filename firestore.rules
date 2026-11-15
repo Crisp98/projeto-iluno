@@ -51,6 +51,23 @@ service cloud.firestore {
       allow read: if true;
       allow write: if false;
 
+      // T09/T10 — comentários públicos vinculados ao perfil autenticado.
+      match /comentarios/{comentarioId} {
+        allow read: if true;
+        allow create: if logado()
+          && request.resource.data.keys().hasOnly(['texto', 'autorUid', 'autorNome', 'criadoEm'])
+          && request.resource.data.autorUid == request.auth.uid
+          && request.resource.data.texto is string
+          && request.resource.data.texto.size() >= 1
+          && request.resource.data.texto.size() <= 1000
+          && request.resource.data.texto.matches('[\\s\\S]*[^\\s][\\s\\S]*')
+          && request.resource.data.autorNome is string
+          && request.resource.data.autorNome == get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.nome
+          && request.resource.data.criadoEm == request.time
+          && exists(/databases/$(database)/documents/disciplinas/$(disciplinaId));
+        allow update, delete: if false;
+      }
+
       // ---------- avaliações (T06 / T08) ----------
       match /avaliacoes/{uid} {
         allow read: if true;
