@@ -22,6 +22,28 @@ Plataforma em que estudantes consultam e compartilham avaliações de disciplina
 
 Testes da API em `tests/test_api.py`.
 
+## Onda 2 — primeira entrega (T09 e T10)
+
+A página de disciplina permite consultar os 50 comentários mais recentes em tempo real. Usuários autenticados com perfil podem enviar textos de até 1000 caracteres; o nome do perfil aparece publicamente, sem divulgar o e-mail. Comentários vazios são recusados. Edição e exclusão não fazem parte desta entrega.
+
+Os documentos ficam em `disciplinas/{id}/comentarios/{comentarioId}`, com `texto`, `autorUid`, `autorNome` e `criadoEm`. As regras conferem o UID autenticado, o nome registrado no perfil, a existência da disciplina e o timestamp do servidor.
+
+**Antes de testar ou publicar:** atualizar as regras do Firestore com o conteúdo de `firestore.rules`. O banco `iluno-dev` é compartilhado com a publicação original; a mudança adiciona acesso à subcoleção de comentários. Não é necessário executar a carga inicial.
+
+Validação manual da entrega:
+
+Testes do serviço: `node --experimental-vm-modules --test tests/comentarios.test.mjs`. Usam dependências simuladas para conferir autoria, validação do texto e assinatura da lista; não substituem os testes das regras no Firebase.
+
+Testes reais das regras: com Node.js 22+ e Java 21+ disponíveis no PATH, executar `npm ci` e `npm run test:rules` (no PowerShell, `npm.cmd`). O comando inicia o emulador oficial do Firestore em `127.0.0.1:8080`, executa oito testes e encerra o processo. A primeira execução baixa o emulador. Não exige login Firebase, chave privada ou acesso ao banco compartilhado: utiliza o projeto fictício `demo-iluno-rules`. A porta 8080 precisa estar livre.
+
+Os testes verificam criação válida e multilinha, leitura pública, rejeição de criação anônima, UID/nome falsos, perfil ou disciplina inexistente, data forjada, campos extras/ausentes, texto inválido e bloqueio de alteração, exclusão e sobrescrita. Os oito testes passaram no emulador em 15/11/2026; o fluxo da interface foi confirmado manualmente no Preview.
+
+1. Sem login, abrir uma disciplina: a lista deve carregar e o formulário deve oferecer entrar/criar conta.
+2. Entrar e enviar um comentário: conferir nome, texto e data; atualizar a página e confirmar persistência.
+3. Abrir outra disciplina: o comentário não deve aparecer nela. Em outra sessão, confirmar a atualização da lista.
+4. Testar texto vazio, somente espaços e mais de 1000 caracteres; conferir limite e bloqueio de envio duplicado enquanto a requisição está em andamento.
+5. Com o simulador de regras do Firebase ou emulador, confirmar rejeição de criação anônima, UID/nome de outro usuário, data forjada, campos extras e disciplina inexistente; conferir que update/delete são negados.
+
 ## Estrutura do Firestore
 
 ```

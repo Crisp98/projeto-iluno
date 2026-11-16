@@ -110,3 +110,10 @@ h2 { font-size: 1.1rem; margin: 20px 0 8px; }
 }
 .escala button.ativo { background: var(--primaria); border-color: var(--primaria); color: #fff; }
 .escala button:disabled { cursor: default; }
+
+.comentarios { grid-column: 1 / -1; }
+.comentarios textarea { width: 100%; box-sizing: border-box; font: inherit; padding: 12px; border: 1px solid var(--borda); border-radius: 8px; background: var(--fundo); color: var(--texto); resize: vertical; }
+.comentarios-lista { list-style: none; padding: 0; }
+.comentarios-lista li { padding: 16px 0; border-top: 1px solid var(--borda); }
+.comentarios-lista time { color: var(--suave); font-size: 0.85rem; }
+.comentarios-lista li p { white-space: pre-wrap; overflow-wrap: anywhere; }
